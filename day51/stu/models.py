@@ -11,7 +11,17 @@ class Student(models.Model):
 class StudentInfo(models.Model):
 
     i_addr = models.CharField(max_length=30)
+    i_image = models.ImageField(upload_to='upload',null=True)
     s = models.OneToOneField(Student)
 
     class Meta:
         db_table = 'day51_Student_info'
+
+class Visit(models.Model):
+
+    v_url = models.CharField(max_length=30)
+    v_times = models.IntegerField()
+
+    class Meta:
+        db_table = 'day51_visit'
+

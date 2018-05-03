@@ -1,15 +1,26 @@
+from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 
 from stu.models import Student, StudentInfo
+from uauth.models import Users
 
 def index(request):
 
     if request.method == 'GET':
         # 获取所有学生信息
+        # ticket = request.COOKIES.get('ticket')
+        # if not ticket:
+        #     return HttpResponseRedirect('/uauth/login/')
+        # if Users.objects.filter(u_ticket=ticket).exists():
+        #     stuinfos = StudentInfo.objects.all()
+        #     return render(request, 'index.html', {'stuinfos': stuinfos})
+        # else:
+        #     return HttpResponseRedirect('/uauth/login/')
         stuinfos = StudentInfo.objects.all()
-        return render(request, 'index.html', {'stuinfos':stuinfos})
+        return render(request,'index.html',{'stuinfos':stuinfos})
+
 
 def addStu(request):
 
@@ -40,6 +51,19 @@ def addStuInfo(request, stu_id):
         stu_id = request.POST.get('stu_id')
         addr = request.POST.get('addr')
 
-        StudentInfo.objects.create(i_addr=addr, s_id=stu_id)
+        # 添加头像图片
+        img = request.FILES.get('img')
+
+        StudentInfo.objects.create(i_addr=addr, s_id=stu_id, i_image=img)
 
         return HttpResponseRedirect('/stu/index/')
+
+
+def stuPage(request):
+
+    if request.method == 'GET':
+        page_id = request.GET.get('page_id',1) # 如果没有取到page_id，则默认为1
+        stus = Student.objects.all()
+        paginator = Paginator(stus,3)
+        page = paginator.page(int(page_id))
+        return render(request,'index_page.html',{'stus':page})

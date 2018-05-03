@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.contrib.staticfiles.urls import static
 
 
 urlpatterns = [
@@ -22,3 +23,6 @@ urlpatterns = [
     url(r'^stu/', include('stu.urls', namespace='s')),
     url(r'^uauth/', include('uauth.urls'))
 ]
+
+from day51 import settings
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
